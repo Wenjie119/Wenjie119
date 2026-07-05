@@ -1,92 +1,100 @@
 /* =================================================================
    GeoFWI Paper Advisor — config_data.js  v2.0
    ================================================================
-   脱离 Claude 自由修改指南:
-   ① 添加论文   → 在 LIT_DATA 底部追加对象 (LIT_DATA.push({...}))
-   ② 改清单     → 编辑 CHECKLIST.p1 / p2 / p3 数组
-   ③ 改提示词   → 编辑 PROMPTS / ARS_SYSTEM
-   ④ 加图表模板 → 在 GALLERY_TEMPLATES 底部追加
-   ⑤ 改基线数字 → 编辑 METRICS_DATA
-   ⑥ 改授权邮箱 → 编辑 FIREBASE_ALLOWED_EMAIL（须同步 Firebase Rules）
-   ⑥b 改公开网址 → 编辑 ADVISOR_SITE（GitHub Pages / Firebase 项目名）
-   ⑦ 改思路全景 → 编辑 DESIGN_PANORAMA（三篇论文整合页）
-   ⑧ OpenClaw   → 编辑 OPENCLAW（远程 GPU 实验台配置）
-   ⑨ 实验工作区 → 编辑 RESEARCH_WORKSPACE（WSL bp-diff-fwi-complex 路径）
-   ⑩ Paper 1 关联 → 编辑 PAPER1_WSL（GeoFWI/近端引导/课程 文件映射）
-   ⑪ 理论审计   → 编辑 THEORY_AUDIT（审稿漏洞 · 知识性错误 · 网络建议 · 行动优先级）
-   ⑫ Related Work → 编辑 PAPER1_RELATED_WORK（main.tex 英文草稿 · 一键复制）
-   ⑬ Agent文献  → 编辑 AGENT_LIT_PLAYBOOK（2025–2026 高端文献吞噬指南 · 符号标准）
-   ⑭ 实验矩阵   → 编辑 MINIMAL_EXP_MATRIX（三篇论文 2 周最小可跑实验 · 其余 Deferred）
-   ⑮ main.tex   → 编辑 MAIN_TEX_FIXES（命题1/命名/双 ε · 粘贴进 WSL main.tex）
-   ⑯ 写作实验   → 编辑 WRITING_EXPERIMENT_PLAYBOOK（8 条体系化建议 · 三篇联动）
-   ⑰ 实验诚信   → 编辑 EXPERIMENT_INTEGRITY（WSL 审计 · 未核实数字标记）
-   ⑱ 知识审计   → 编辑 KNOWLEDGE_AUDIT（符号/物理假设 · 代码对照 2026-06）
-   ⑲ 科学 surprise → 编辑 EXPERIMENT_SURPRISE（贡献意外性 · Pareto/决策/闭环实验）
-   ⑳ 竞争格局   → 编辑 COMPETITIVE_LANDSCAPE（Peng/Feng 2026 · 数据集难度 · 战略修订）
-   ㉑ 按天优先级 → 编辑 OPERATIONAL_PRIORITY（三篇投稿序 · 阶段门控）
-   ㉒ 算力预算   → 编辑 COMPUTE_BUDGET（2026 Q2 云价 · FWI 正演开销 · 阶段门控 ¥）
-   ㉓ 审稿分析   → 编辑 PAPER_REVIEW_DASHBOARD（Paper 1/2/3 同行诊断 · fixQueue）
-   ㉔ 投稿战略   → 编辑 SUBMISSION_STRATEGY（P1 C&G/IEEE · P2 Geophysics · P3 JCR1 锚定）
-   ㉔b 略高清单  → 编辑 BAR_ABOVE_AVERAGE_GUIDE（平均略高定义 · 三篇提升 · ROI · 逐周）
-   ㉔ 写作工具链 → 编辑 RESEARCH_WRITING_TOOLS（工作流 · 矩阵 · 工具 Stars）
-   ㉕ AI 栈版本  → 编辑 AI_STACK_CONFIG（CC Switch / Codex / DeepSeek 型号）
-   ㉖ 写作绘图Hub → 编辑 WRITING_FIGURE_HUB（功能入口矩阵）
-   ㉗ 工具工作台   → 编辑 TOOLKIT_WORKBENCH（Awesome/FigGen/ARS 命令与模板）
-   保存后刷新浏览器即可生效。不需要任何 AI 介入。
+   Edit guide:
+   ① Add papers      → append to LIT_DATA
+   ② Checklists      → CHECKLIST.p1 / p2 / p3
+   ③ Prompts         → PROMPTS / ARS_SYSTEM
+   ④ Figure templates→ GALLERY_TEMPLATES
+   ⑤ Locked metrics  → METRICS_DATA
+   ⑥ Firebase email  → FIREBASE_ALLOWED_EMAIL (+ Rules)
+   ⑥b Public URL     → ADVISOR_SITE (GitHub Pages)
+   ⑦ Design panorama → DESIGN_PANORAMA
+   ⑧ OpenClaw        → OPENCLAW
+   ⑨ WSL workspace   → RESEARCH_WORKSPACE
+   ⑩ Paper 1 map     → PAPER1_WSL
+   ⑪ Theory audit    → THEORY_AUDIT
+   ⑫ Related Work    → PAPER1_RELATED_WORK
+   ⑬ Agent lit       → AGENT_LIT_PLAYBOOK
+   ⑭ Exp matrix      → MINIMAL_EXP_MATRIX
+   ⑮ main.tex fixes  → MAIN_TEX_FIXES
+   ⑯ Writing playbook→ WRITING_EXPERIMENT_PLAYBOOK
+   ⑰ Integrity       → EXPERIMENT_INTEGRITY
+   ⑱ Knowledge audit → KNOWLEDGE_AUDIT
+   ⑲ Surprise exps   → EXPERIMENT_SURPRISE
+   ⑳ Competition     → COMPETITIVE_LANDSCAPE
+   ㉑ Priorities      → OPERATIONAL_PRIORITY
+   ㉒ Compute budget  → COMPUTE_BUDGET
+   ㉓ Review dashboard→ PAPER_REVIEW_DASHBOARD
+   ㉔ Submission      → SUBMISSION_STRATEGY
+   ㉔b Above-average  → BAR_ABOVE_AVERAGE_GUIDE
+   ㉔ Writing tools   → RESEARCH_WRITING_TOOLS
+   ㉕ AI stack         → AI_STACK_CONFIG
+   ㉖ Figure hub       → WRITING_FIGURE_HUB
+   ㉗ Toolkit bench    → TOOLKIT_WORKBENCH
+   Save and refresh the browser — no server restart required.
 ================================================================= */
 
-var CONFIG_VERSION = '3.14.1';
-var CONFIG_UPDATED = '2026-06-17 · ADVISOR_SITE → Wenjie119 GitHub Pages';
+var CONFIG_VERSION = '3.15.1';
+var CONFIG_UPDATED = '2026-07-06 · Pages 审稿 + 四 GitHub 栏 + P1 41pp Appendix';
 
-/* ════ Codex/ARS 写作会话持久化（刷新/新窗口不丢上下文） ════ */
-var CODEX_WRITING_SESSION_PROTOCOL =
-  '【会话持久化 · 强制遵守 — 优先级高于一切写作任务】\n\n' +
-  '你正在参与长周期论文润色。Chat/Codex **没有跨刷新记忆**；你必须把状态写入磁盘日志，供下次会话续写。\n\n' +
-  '## 日志文件（每篇论文独立，禁止混用）\n' +
-  '- Paper 1：`paper1/drafts/CODEX_WRITING_SESSION.md`（WSL: `/root/projects/bp-diff-fwi-complex/paper1/drafts/...`）\n' +
-  '- Paper 2：`paper2/drafts/CODEX_WRITING_SESSION.md`\n\n' +
-  '## 每次回复结束前必须完成（不可省略）\n' +
-  '1. **读**日志顶部 `RUNNING_STATE`（若不存在则创建）。\n' +
-  '2. **写回**更新后的 `RUNNING_STATE`（YAML 块，≤25 行），字段固定：\n' +
-  '   - paper, last_updated, current_task, completed_sections[], pending_sections[], locked_numbers_ok, last_tex_edit, open_questions[]\n' +
-  '3. **追加**一条 `SESSION_LOG`（Markdown 三级标题 + 时间戳 + 本轮摘要 + 产出路径 + 下轮第一条指令）。\n' +
-  '4. 若产出了 LaTeX 片段：**同时**写入/补丁目标 tex 或注明「仅建议、未写入」。\n\n' +
-  '## 新会话 / 刷新后 / 用户说「续写」时\n' +
-  '**禁止**从零开始或假装记得上文。必须先 `read` 上述日志，复述 `RUNNING_STATE` 与最后一轮 `SESSION_LOG`，再执行 `pending_sections` 第一项。\n\n' +
-  '## 网页 ARS 侧（用户操作）\n' +
-  '每次点「润色 / ARS / 批量润色」→ prompt 自动串联四 GitHub 工具：Awesome + Codex ARS + 庆研 ARS + FigGen（见 buildGeoFWIToolkitPrompt）。\n' +
-  '顾问页对话已 localStorage 自动保存；仍须写磁盘日志（Codex 读不到浏览器缓存）。用户可点「导出对话」「复制续写 Prompt」。\n\n' +
-  '## 纪律提醒\n' +
-  '- 不得改 locked 实验数字；不得 SOTA 声称（P1）；P2 任务=velocity-denoising。\n' +
-  '- 日志只增不改历史 SESSION_LOG 条目（更正用新条目说明 supersede）。\n';
+/* ════ 根目录草稿 PDF（与 sync_project_snapshot rootPdfs 一致） ════ */
+var ADVISOR_ROOT_PDFS = {
+  updated: '2026-07-05',
+  p1: { file: 'Paper1_main.pdf', source: 'paper1/manuscript/main.pdf', pages: '~56+' },
+  p2: { file: 'Paper2_manuscript_draft.pdf', source: 'paper2/drafts/paper2_manuscript_draft.pdf', pages: '21' },
+  p3: { file: 'Paper3_manuscript_draft.pdf', source: 'paper3/drafts/paper3_manuscript_draft.pdf', pages: '13+Appendix' },
+  figureBank: { manifest: 'fig_exports/supplementary_bank/manifest.json', record: '20260705 候补图库备案.md', n: 45 },
+  indexDocs: ['20260704 三篇实验写作全目录.md', '20260705 三篇写作修复清单.md', '20260705 候补图库备案.md'],
+};
 
-var CODEX_SESSION_PATHS = {
+/* ════ Writing session persistence (survives refresh / new window) ════ */
+var WRITING_SESSION_PROTOCOL =
+  '[Session persistence · mandatory — overrides all writing tasks]\n\n' +
+  'You are in a long-horizon manuscript polish loop. External editors **do not retain context across refresh**; you must write state to disk logs for the next session.\n\n' +
+  '## Log files (one per paper; do not mix)\n' +
+  '- Paper 1: `paper1/drafts/WRITING_SESSION.md` (WSL: `/root/projects/bp-diff-fwi-complex/paper1/drafts/...`)\n' +
+  '- Paper 2: `paper2/drafts/WRITING_SESSION.md`\n\n' +
+  '## Before every reply ends (required)\n' +
+  '1. **Read** top `RUNNING_STATE` in the log (create if missing).\n' +
+  '2. **Write back** updated `RUNNING_STATE` (YAML block, ≤25 lines): paper, last_updated, current_task, completed_sections[], pending_sections[], locked_numbers_ok, last_tex_edit, open_questions[]\n' +
+  '3. **Append** one `SESSION_LOG` entry (H3 heading + timestamp + summary + artifact paths + next instruction).\n' +
+  '4. If LaTeX was produced: patch target tex or mark "suggestion only, not applied".\n\n' +
+  '## New session / after refresh / user says "resume"\n' +
+  'Do **not** restart from scratch. Read the log, restate `RUNNING_STATE` and the last `SESSION_LOG`, then take the first `pending_sections` item.\n\n' +
+  '## Advisor web (user actions)\n' +
+  'Polish / ARS buttons chain four GitHub tools (Awesome + local ARS + Qingyan ARS + FigGen). Browser chat is in localStorage; disk log is still required for external editors.\n\n' +
+  '## Discipline\n' +
+  '- Do not change locked experiment numbers; no SOTA claims (P1); P2 task = velocity-denoising.\n' +
+  '- Append-only SESSION_LOG (supersede via new entries).\n';
+
+var WRITING_SESSION_PATHS = {
   p1: {
-    logWsl: '/root/projects/bp-diff-fwi-complex/paper1/drafts/CODEX_WRITING_SESSION.md',
-    logRel: 'paper1/drafts/CODEX_WRITING_SESSION.md',
+    logWsl: '/root/projects/bp-diff-fwi-complex/paper1/drafts/WRITING_SESSION.md',
+    logRel: 'paper1/drafts/WRITING_SESSION.md',
     tex: 'paper1/manuscript/main.tex'
   },
   p2: {
-    logWsl: '/root/projects/bp-diff-fwi-complex/paper2/drafts/CODEX_WRITING_SESSION.md',
-    logRel: 'paper2/drafts/CODEX_WRITING_SESSION.md',
+    logWsl: '/root/projects/bp-diff-fwi-complex/paper2/drafts/WRITING_SESSION.md',
+    logRel: 'paper2/drafts/WRITING_SESSION.md',
     tex: 'paper2/drafts/paper2_manuscript_draft.tex'
   }
 };
 
 function codexResumePrompt(paperKey) {
-  var p = CODEX_SESSION_PATHS[paperKey] || CODEX_SESSION_PATHS.p1;
-  var label = paperKey === 'p2' ? 'Paper 2 · GFS' : 'Paper 1 · 路径一诊断稿';
+  var p = WRITING_SESSION_PATHS[paperKey] || WRITING_SESSION_PATHS.p1;
+  var label = paperKey === 'p2' ? 'Paper 2 · GFS' : 'Paper 1 · path-1 diagnostic';
   return (
-    '【续写 Codex 写作会话 · ' + label + '】\n\n' +
-    '**第一步（必做）**：读取 `' + p.logRel + '`（WSL: `' + p.logWsl + '`）。\n' +
-    '解析顶部 `RUNNING_STATE` 与最后 2 条 `SESSION_LOG`，用 5 句话复述当前进度，列出 `pending_sections`。\n\n' +
-    '**第二步**：从 pending 第一项继续；不要重复 `completed_sections` 里已 ACCEPTED 的段落。\n\n' +
-    '**第三步**：本轮回复末尾按协议更新日志 + RUNNING_STATE。\n\n' +
-    CODEX_WRITING_SESSION_PROTOCOL
+    '[Resume writing session · ' + label + ']\n\n' +
+    '**Step 1 (required)**: read `' + p.logRel + '` (WSL: `' + p.logWsl + '`).\n' +
+    'Parse `RUNNING_STATE` and the last 2 `SESSION_LOG` entries; summarize progress in 5 sentences; list `pending_sections`.\n\n' +
+    '**Step 2**: continue from the first pending item; do not redo ACCEPTED sections in `completed_sections`.\n\n' +
+    '**Step 3**: update log + RUNNING_STATE at end of this reply.\n\n' +
+    WRITING_SESSION_PROTOCOL
   );
 }
 
-/** 从 PROJECT_SNAPSHOT（sync_project_snapshot.py）构建 Codex 完整 prompt */
+/** 从 PROJECT_SNAPSHOT 构建写作项目 prompt */
 function buildCodexProjectPrompt(paperKey, mode) {
   mode = mode || 'full';
   var snap = (typeof PROJECT_SNAPSHOT !== 'undefined') ? PROJECT_SNAPSHOT : null;
@@ -102,12 +110,12 @@ function buildCodexProjectPrompt(paperKey, mode) {
   }
 
   if (snap) {
-    parts.push('\n【项目快照 · ' + snap.updated + '】');
-    parts.push('WSL 根目录: ' + snap.wslRoot);
+    parts.push('\n[Project snapshot · ' + snap.updated + ']');
+    parts.push('WSL root: ' + snap.wslRoot);
     if (p) {
-      parts.push('阶段: ' + (p.phase || '') + ' · 目标刊: ' + (p.venueHint || ''));
+      parts.push('Phase: ' + (p.phase || '') + ' · Target venue: ' + (p.venueHint || ''));
       if (p.tex) {
-        parts.push('手稿: ' + p.tex.wsl + ' (mtime ' + (p.tex.mtime || '?') + ')');
+        parts.push('Manuscript: ' + p.tex.wsl + ' (mtime ' + (p.tex.mtime || '?') + ')');
       }
       var rs = p.sessionLog && p.sessionLog.runningState;
       if (rs && rs.current_task) {
@@ -120,7 +128,7 @@ function buildCodexProjectPrompt(paperKey, mode) {
         }
       }
       if (p.experiments) {
-        parts.push('\n【实验进度 · JSON 实测】');
+        parts.push('\n[Experiment progress · JSON]');
         Object.keys(p.experiments).forEach(function(k) {
           var v = p.experiments[k];
           if (v && typeof v === 'object' && v.mean_cc != null) {
@@ -132,37 +140,37 @@ function buildCodexProjectPrompt(paperKey, mode) {
       }
       if (p.tex) {
         if (mode === 'abstract' && p.tex.abstract) {
-          parts.push('\n【当前 Abstract 原文 · 来自 tex 快照】\n' + p.tex.abstract);
+          parts.push('\n[Current Abstract · tex snapshot]\n' + p.tex.abstract);
         } else if (mode === 'limitations' && p.tex.limitations) {
-          parts.push('\n【当前 Limitations 原文 · 来自 tex 快照】\n' + p.tex.limitations);
+          parts.push('\n[Current Limitations · tex snapshot]\n' + p.tex.limitations);
         } else if (mode === 'applications' && p.tex.applications) {
-          parts.push('\n【当前 Applications 原文 · 来自 tex 快照】\n' + p.tex.applications);
+          parts.push('\n[Current Applications · tex snapshot]\n' + p.tex.applications);
         } else if (mode === 'conclusion' && p.tex.conclusion) {
-          parts.push('\n【当前 Conclusion 原文 · 来自 tex 快照】\n' + p.tex.conclusion);
+          parts.push('\n[Current Conclusion · tex snapshot]\n' + p.tex.conclusion);
         } else if (paperKey === 'p2' && p.tex.introduction) {
-          parts.push('\n【当前 Introduction 原文 · 来自 tex 快照 · 节选】\n' + p.tex.introduction.slice(0, 4000));
+          parts.push('\n[Current Introduction · tex snapshot · excerpt]\n' + p.tex.introduction.slice(0, 4000));
         } else {
-          if (p.tex.abstract) parts.push('\n【Abstract 节选】\n' + p.tex.abstract.slice(0, 2000));
-          if (p.tex.conclusion) parts.push('\n【Conclusion 节选】\n' + p.tex.conclusion.slice(0, 2000));
+          if (p.tex.abstract) parts.push('\n[Abstract excerpt]\n' + p.tex.abstract.slice(0, 2000));
+          if (p.tex.conclusion) parts.push('\n[Conclusion excerpt]\n' + p.tex.conclusion.slice(0, 2000));
         }
       }
     }
   } else {
-    parts.push('\n⚠ PROJECT_SNAPSHOT 未加载。请先运行 sync_project_snapshot.py 或点击 ARS 页「同步项目快照」。');
+    parts.push('\n[NOTE] PROJECT_SNAPSHOT not loaded. Run sync_project_snapshot.py or click Sync on the ARS page.');
   }
 
   if (paperKey === 'p1' && typeof PAPER1_ARS_SNIPPETS !== 'undefined') {
-    parts.push('\n【证据地图】\n' + PAPER1_ARS_SNIPPETS.evidenceMapNote);
-    parts.push('\n【Table 1 proxy】\n' + PAPER1_ARS_SNIPPETS.proxyTable1);
+    parts.push('\n[Evidence map]\n' + PAPER1_ARS_SNIPPETS.evidenceMapNote);
+    parts.push('\n[Table 1 proxy]\n' + PAPER1_ARS_SNIPPETS.proxyTable1);
   }
   if (paperKey === 'p2' && typeof PAPER2_ARS_SNIPPETS !== 'undefined') {
     parts.push('\n【Table 2】\n' + PAPER2_ARS_SNIPPETS.table2);
-    parts.push('\n【颠倒动机】\n' + PAPER2_ARS_SNIPPETS.rankingInversionNote);
+    parts.push('\n[Ranking inversion note]\n' + PAPER2_ARS_SNIPPETS.rankingInversionNote);
   }
 
-  parts.push('\n【Codex 写回要求】编辑 WSL tex 后更新 `' +
-    (CODEX_SESSION_PATHS[paperKey] ? CODEX_SESSION_PATHS[paperKey].logRel : 'CODEX_WRITING_SESSION.md') +
-    '`，并建议用户重新同步快照。');
+  parts.push('\n[Write-back] After editing WSL tex, update `' +
+    (WRITING_SESSION_PATHS[paperKey] ? WRITING_SESSION_PATHS[paperKey].logRel : 'WRITING_SESSION.md') +
+    '` and re-sync the project snapshot.');
 
   return parts.filter(Boolean).join('\n');
 }
@@ -178,9 +186,11 @@ var ADVISOR_SITE = {
   githubRepo: 'Wenjie119',
   firebaseProjectId: 'wenjie119',
   githubPagesDomain: 'wenjie119.github.io',
+  pagesRequiredFiles: ['index.html', 'config_data.js', 'project_snapshot.js'],
+  pagesDeployFolder: 'deploy/github-pages/Wenjie119/',
   localUrl: 'http://127.0.0.1:8080/index.html',
   updated: '2026-06-17',
-  note: 'GitHub 账号 Wenjie119 · 仓库 Wenjie119 · Pages 根目录部署 index.html + config_data.js',
+  note: 'GitHub user Wenjie119 · repo Wenjie119 · Pages root: index.html + config_data.js',
 };
 
 function advisorSiteUrl() {
@@ -189,62 +199,61 @@ function advisorSiteUrl() {
     : 'https://wenjie119.github.io/Wenjie119/';
 }
 
-/* ════ AI审稿示例(API不可用时的fallback) ════ */
-const DEMO_REVIEW = {
-  overallScore: 78,
-  summary: "GC-FWI path-1 diagnostic manuscript (2026-06-17 audit): proxy Table 1 is filled from metrics_canonical_*_proxy.json (GC-FWI test CC=0.859; U-Net 0.916; PINN 0.896). Historical blockers (placeholder CC=0.00/0.62, Proposition 1 global POCS claim, 6-stage U-Net geometry, ε_cfl symbol confusion) are resolved in main.tex. Remaining gaps are deferred experiments (wall-clock, N-stage ablation, bootstrap CI) and venue-specific polish—not integrity fatals.",
+/* ════ 审阅示例（API 不可用时的离线 fallback） ════ */
+const SAMPLE_REVIEW = {
+  overallScore: 82,
+  summary: 'GC-FWI path-1 diagnostic · Paper1_main.pdf 41pp（2026-07-06）: proxy Table 1 来自 metrics_canonical_*_proxy.json（GC-FWI CC=0.859; U-Net 0.916; PINN 0.896）。Appendix 已含 bootstrap 95% CI、P1-E9 噪声表+热图、ablation 图、E7 Pareto。历史 fatal（占位 CC、Proposition 1 全局收敛、ε_cfl 混用）已解决。仍 deferred：wall-clock、N-stage curriculum 全扫、ORCID/Zenodo。',
   categories: [
-    { id:'intro', name:'Introduction & Motivation', icon:'📖', score:8, issues:[
-      { severity:'Minor', text:'Related Work could add explicit numbered comparison to DiffusionFWI/SeisFusion/DPS (PLAYBOOK #2)—optional for C&G.' },
-      { severity:'Minor', text:'Keep hedging: contribution is benchmark transparency + mechanism diagnostics, not beating U-Net/PINN on proxy CC.' },
+    { id:'intro', name:'Introduction & Motivation', icon:'I', score:8, issues:[
+      { severity:'Minor', text:'Related Work 可加 WaveDiffusion (ICML 2025) 编号对比段 — 显式 vs 隐式物理一致性。' },
+      { severity:'Minor', text:'保持诚实叙事：benchmark transparency + curriculum/失效模式，非 proxy CC SOTA。' },
     ]},
-    { id:'method', name:'Methodology & Physics', icon:'⚙', score:8, issues:[
-      { severity:'Minor', text:'Remark 1 (POCS motivation) correctly marked not verified; homotopy global-convergence paragraph removed. Do not reintroduce global guarantees.' },
-      { severity:'Minor', text:'Tolerance notation unified: ε_design (proximal), ε_gate (physics_score), ε_rms (P1-F0). Do not revert to ε_cfl.' },
-      { severity:'Minor', text:'Algorithm 1 uses K-step proximal loop + gradient-proxy conditioning c; audited U-Net is 3-stage hidden_dim=32, T=20.' },
+    { id:'method', name:'Methodology & Physics', icon:'M', score:8, issues:[
+      { severity:'Minor', text:'Remark 1 / P1-F0：37/55 improved，0/55 converged @ K=5 — 勿声称全局投影。' },
+      { severity:'Minor', text:'ε_design / ε_gate / ε_rms 已分设；training-time physics weight 与 sampling-time K=0/5 隔离已写入。' },
     ]},
-    { id:'results', name:'Experiments & Results', icon:'📊', score:8, issues:[
-      { severity:'Minor', text:'Table 1 locked to audited JSON. w/o proximal / w/o curriculum / w/o both ablations filled. physics_score=0 omitted with explanation.' },
-      { severity:'Minor', text:'Deferred: N∈{3,5,7,11,15} curriculum ablation, bootstrap CIs, ms/step wall-clock.' },
+    { id:'results', name:'Experiments & Results', icon:'R', score:9, issues:[
+      { severity:'Minor', text:'Table 1 + ablation（含 w/o both）+ bootstrap CI + P1-E9 已闭环；Wilcoxon 结论与 JSON 一致。' },
+      { severity:'Minor', text:'Deferred：N∈{3,5,7,11,15} 全 curriculum 扫、ms/step wall-clock。' },
     ]},
-    { id:'figures', name:'Figures & Visualization', icon:'🎨', score:7, issues:[
-      { severity:'Minor', text:'Consider compressing figure count for IEEE TGRS if targeting that venue; C&G less strict.' },
+    { id:'figures', name:'Figures & Visualization', icon:'F', score:8, issues:[
+      { severity:'Minor', text:'Appendix 候补图（bootstrap combined、ablation bars、E9 heatmap）已嵌入；主文 figure 数仍可按 C&G 压缩。' },
     ]},
-    { id:'writing', name:'Writing Quality', icon:'✍', score:8, issues:[
-      { severity:'Minor', text:'Abstract is diagnostic plain text (no equations)—monitor word count for Geophysics if resubmitted there.' },
+    { id:'writing', name:'Writing Quality', icon:'W', score:8, issues:[
+      { severity:'Minor', text:'Abstract 为诊断纯文本；投 Geophysics 前再压字数。' },
     ]},
     { id:'physics', name:'Physical Soundness', icon:'∿', score:8, issues:[
-      { severity:'Minor', text:'Sampling-time K=5 hook does not shift canonical CC (K0 isolation); do not conflate with training-time physics weight benefit.' },
-      { severity:'Minor', text:'Shot-gather pilots (CC=0.591/0.391) are separate diagnostic tables—not replacements for proxy Table 1.' },
+      { severity:'Minor', text:'physics_score=0 全方法一致；shot-gather pilot 单独成表，勿替代 proxy Table 1。' },
+      { severity:'Minor', text:'P1-E9：三 guidance 在 5 dB 近重合 — 勿声称 GC-FWI 噪声鲁棒性优于 DPS/W₂。' },
     ]}
   ]
 };
 
-/* ════ AI审稿提示词 ════ */
+/* ════ 稿件审阅提示词 ════ */
 const PROMPTS = {
   full: `You are an expert Geophysics (SEG) journal reviewer specializing in full-waveform inversion and the GeoFWI benchmark dataset. Review this manuscript across 6 dimensions. Return ONLY valid JSON (no markdown fences):
-{"overallScore":72,"summary":"one paragraph","categories":[{"id":"intro","name":"Introduction & Motivation","icon":"📖","score":7,"issues":[{"severity":"Major","text":"detailed issue with specific fix suggestion"}]}]}
+{"overallScore":72,"summary":"one paragraph","categories":[{"id":"intro","name":"Introduction & Motivation","icon":"I","score":7,"issues":[{"severity":"Major","text":"detailed issue with specific fix suggestion"}]}]}
 Categories: intro (Introduction & Motivation), method (Methodology & Physics), results (Experiments & Results), figures (Figures & Visualization), writing (Writing Quality), physics (Physical Soundness).`,
-  quick: `You are a Geophysics journal reviewer. Find the top 5 fatal issues in this FWI manuscript. Return ONLY valid JSON: {"overallScore":65,"summary":"brief","categories":[{"id":"critical","name":"Critical Issues","icon":"⚠","score":4,"issues":[{"severity":"Critical","text":"issue + fix"}]}]}`,
-  figures: `You are a figure quality expert for Geophysics journals. Review ONLY figures and tables. Check colormaps (avoid jet for errors—use RdBu_r; avoid viridis for velocity—use jet or seismic_r), captions, DPI, statistical tables. Return ONLY valid JSON: {"overallScore":70,"summary":"figure quality summary","categories":[{"id":"colormaps","name":"Colormaps","icon":"🎨","score":6,"issues":[]},{"id":"captions","name":"Captions","icon":"📝","score":7,"issues":[]},{"id":"tables","name":"Statistical Tables","icon":"📊","score":8,"issues":[]}]}`,
-  physics: `You are a geophysics and wave-equation expert. Review ONLY the mathematical and physical content. Check wave equations, CFL conditions, diffusion-physics coupling, hard vs soft constraints, Bayesian uncertainty formulation, GFS metric definition. Return ONLY valid JSON: {"overallScore":68,"summary":"physics review","categories":[{"id":"eqs","name":"Wave Equations","icon":"∿","score":7,"issues":[]},{"id":"constr","name":"Physical Constraints","icon":"🔒","score":6,"issues":[]},{"id":"metrics","name":"Physics Metrics","icon":"📐","score":7,"issues":[]}]}`
+  quick: `You are a Geophysics journal reviewer. Find the top 5 fatal issues in this FWI manuscript. Return ONLY valid JSON: {"overallScore":65,"summary":"brief","categories":[{"id":"critical","name":"Critical Issues","icon":"!","score":4,"issues":[{"severity":"Critical","text":"issue + fix"}]}]}`,
+  figures: `You are a figure quality expert for Geophysics journals. Review ONLY figures and tables. Check colormaps (avoid jet for errors—use RdBu_r; avoid viridis for velocity—use jet or seismic_r), captions, DPI, statistical tables. Return ONLY valid JSON: {"overallScore":70,"summary":"figure quality summary","categories":[{"id":"colormaps","name":"Colormaps","icon":"F","score":6,"issues":[]},{"id":"captions","name":"Captions","icon":"C","score":7,"issues":[]},{"id":"tables","name":"Statistical Tables","icon":"R","score":8,"issues":[]}]}`,
+  physics: `You are a geophysics and wave-equation expert. Review ONLY the mathematical and physical content. Check wave equations, CFL conditions, diffusion-physics coupling, hard vs soft constraints, Bayesian uncertainty formulation, GFS metric definition. Return ONLY valid JSON: {"overallScore":68,"summary":"physics review","categories":[{"id":"eqs","name":"Wave Equations","icon":"∿","score":7,"issues":[]},{"id":"constr","name":"Physical Constraints","icon":"L","score":6,"issues":[]},{"id":"metrics","name":"Physics Metrics","icon":"P","score":7,"issues":[]}]}`
 };
 
 /* ════ 投稿检查清单 — 格式: {id,text,meta}，按 p1/p2/p3 分组 ════ */
 const CHECKLIST = {
   p1: [
     { id:'abs_len', text:'Abstract ≤ 250 words with no equations or citations', meta:'Geophysics format requirement' },
-    { id:'main_tex_prop1', text:'✅ Remark 1 替代 Proposition 1；homotopy 全局收敛段已删（2026-06-17）', meta:'resolved · P1-F0 37/55' },
+    { id:'main_tex_prop1', text:'[DONE] Remark 1 替代 Proposition 1；homotopy 全局收敛段已删（2026-06-17）', meta:'resolved · P1-F0 37/55' },
     { id:'rw_diff_list', text:'Related Work 末尾编号清单：Compared to [DPS/SeisFusion/…], we differ in (1)(2)(3)', meta:'WRITING_EXPERIMENT_PLAYBOOK #2 · optional' },
-    { id:'p1_gfs_column', text:'✅ Paper 1 Table 1 含 GFS 列', meta:'metrics_canonical · 2026-06-27' },
-    { id:'limitations_sec', text:'✅ Limitations 小节已写入（proxy/domain gap/physics_score/K=5）', meta:'main.tex · 2026-06-17 polish' },
-    { id:'main_tex_naming', text:'✅ Hard-Manifold → Proximal Guidance 已统一', meta:'main.tex audit' },
+    { id:'p1_gfs_column', text:'[DONE] Paper 1 Table 1 含 GFS 列', meta:'metrics_canonical · 2026-06-27' },
+    { id:'limitations_sec', text:'[DONE] Limitations 小节已写入（proxy/domain gap/physics_score/K=5）', meta:'main.tex · 2026-06-17 polish' },
+    { id:'main_tex_naming', text:'[DONE] Hard-Manifold → Proximal Guidance 已统一', meta:'main.tex audit' },
     { id:'cite_shen_li', text:'核实 \\cite{shen2024posterior,li2024seisfusion} — 丢文献验证工具', meta:'Intro 区分 DPS 关键段' },
-    { id:'eps_dual', text:'✅ ε_design / ε_gate / ε_rms 已在 §eval_metrics 定义', meta:'resolved · 勿再用 ε_cfl' },
-    { id:'unet_arch', text:'✅ U-Net 审计描述：3 stage · hidden_dim=32 · T=20', meta:'train_inversion.py · resolved' },
-    { id:'cc_fix', text:'✅ Table 1 audited proxy JSON；GC-FWI 0.859 vs U-Net 0.916 — 禁 SOTA', meta:'METRICS_AUDIT · done' },
-    { id:'integrity_footnote', text:'✅ 虚假 verified footnote 已撤回', meta:'Academic integrity · resolved' },
-    { id:'alg1', text:'✅ Algorithm 1：K-step proximal + conditioning c', meta:'main.tex · 2026-06-17' },
+    { id:'eps_dual', text:'[DONE] ε_design / ε_gate / ε_rms 已在 §eval_metrics 定义', meta:'resolved · 勿再用 ε_cfl' },
+    { id:'unet_arch', text:'[DONE] U-Net 审计描述：3 stage · hidden_dim=32 · T=20', meta:'train_inversion.py · resolved' },
+    { id:'cc_fix', text:'[DONE] Table 1 audited proxy JSON；GC-FWI 0.859 vs U-Net 0.916 — 禁 SOTA', meta:'METRICS_AUDIT · done' },
+    { id:'integrity_footnote', text:'[DONE] 虚假 verified footnote 已撤回', meta:'Academic integrity · resolved' },
+    { id:'alg1', text:'[DONE] Algorithm 1：K-step proximal + conditioning c', meta:'main.tex · 2026-06-17' },
     { id:'compute_time', text:'Computational overhead of projection reported (ms per step) — fill [TBD] after GPU benchmark', meta:'Implementation Details' },
     { id:'fig_reduce', text:'33 figures reduced to 10 main + 23 Supplementary', meta:'Geophysics limit' },
     { id:'n_ablation', text:'Curriculum N-stage ablation added (N ∈ {3,5,7,11,15})', meta:'Ablation table' },
@@ -324,9 +333,9 @@ const CHECKLIST = {
 
 /* ════ 科研 AI 写作工具链（GitHub 解析 · 2026-06-17） ════ */
 var RESEARCH_WRITING_TOOLS = {
-  title: '科研 AI 写作工具链',
+  title: 'Research AI writing toolchain',
   updated: '2026-06-17',
-  note: '四仓库 Stars 为 GitHub 公开值（会变）。庆研 ARS 与 Codex ARS 为 sibling 发行；安装命令仅在工作台「安装」Tab。',
+  note: '四仓库 Stars 为 GitHub 公开值（会变）。庆研 ARS 与 本地 ARS 为 sibling 发行；安装命令仅在工作台「安装」Tab。',
   tools: [
     {
       id: 'awesome-ai',
@@ -346,15 +355,15 @@ var RESEARCH_WRITING_TOOLS = {
     },
     {
       id: 'ars-codex',
-      name: 'Academic Research Skills · Codex',
-      short: 'Codex ARS',
+      name: 'Academic Research Skills · 本地版',
+      short: '本地 ARS',
       github: 'https://github.com/Imbad0202/academic-research-skills-codex',
       stars: 5108,
       color: '#06b6d4',
     },
     {
       id: 'ars-claude',
-      name: 'Academic Research Skills · Claude',
+      name: 'Academic Research Skills · Anthropic 版',
       short: '庆研 ARS',
       github: 'https://github.com/Imbad0202/academic-research-skills',
       stars: 35511,
@@ -364,7 +373,7 @@ var RESEARCH_WRITING_TOOLS = {
   workflow: [
     { step: 1, who: '本网页', task: '锁定实验数字 · checklist · Figure Studio · 文献验证' },
     { step: 2, who: 'Awesome 工作台', task: '选 GeoFWI 模板润色 prose（不改数字）' },
-    { step: 3, who: 'ARS 工作台 / Claude / Codex', task: 'deep-research · ars-plan · ars-reviewer' },
+    { step: 3, who: 'ARS 工作台 / 本地 API', task: 'deep-research · ars-plan · ars-reviewer' },
     { step: 4, who: 'FigGen 工作台', task: '概念图 / pipeline 英文 prompt' },
     { step: 5, who: '本网页', task: 'ARS 聊天 Q&A · 投稿清单' },
   ],
@@ -379,7 +388,7 @@ var RESEARCH_WRITING_TOOLS = {
 var AI_STACK_CONFIG = {
   updated: '2026-06-17',
   summary:
-    'CC Switch 在 127.0.0.1:15721 提供 Anthropic Messages 兼容代理；Codex CLI 与网页 serve_geofwi 均走此端口。' +
+    'CC Switch 在 127.0.0.1:15721 提供 Anthropic Messages 兼容代理；本地 CLI 与网页 serve_geofwi 均走此端口。' +
     '同一代理可切换 DeepSeek 或 Claude 路由（取决于 CC Switch 当前选中 provider）。',
   ccSwitch: {
     app: 'CC Switch',
@@ -416,14 +425,14 @@ var AI_STACK_CONFIG = {
     proxy: 'serve_geofwi.py → /api/codex/messages',
   },
   claudeVsCodex: [
-    { role: 'Claude Code + 庆研 ARS', path: 'Anthropic API Key 或 CC Switch Claude 路由', skill: 'academic-research-skills plugin' },
-    { role: 'Codex + DeepSeek', path: 'CC Switch 15721 + ~/.codex/config.toml', skill: 'academic-research-skills-codex' },
-    { role: '本网页 AI', path: 'callAI() 自动：Codex 本地 → Anthropic → Gemini', skill: '无需安装 · 需 serve_geofwi.py' },
+    { role: 'Anthropic CLI + 庆研 ARS', path: 'Anthropic API Key 或 CC Switch Claude 路由', skill: 'academic-research-skills plugin' },
+    { role: '本地 CLI + DeepSeek', path: 'CC Switch 15721 + ~/.codex/config.toml', skill: 'academic-research-skills-codex' },
+    { role: '本网页助手', path: 'callAI() 自动：本地 API → Anthropic → Google', skill: '无需安装 · 需 serve_geofwi.py' },
   ],
   limitations: [
     'CC Switch + DeepSeek：**不支持** Codex/Responses 附图；figure_vision_review 问答用 OCR 文本或改 Anthropic provider',
     'DeepSeek reasoning 可能占满 token 预算 — ARS/配图已设 max_tokens 4096–8192',
-    '庆研 ARS Claude 插件 ≠ Codex ARS skill；DeepSeek 路径请装 academic-research-skills-codex',
+    '庆研 ARS Claude 插件 ≠ 本地 ARS skill；DeepSeek 路径请装 academic-research-skills-codex',
     '网页须用 http://localhost:8080 打开（file:// 无法调 /api/codex）',
   ],
 };
@@ -433,29 +442,29 @@ var WRITING_FIGURE_HUB = {
   title: '写作 · 绘图一体化工作台',
   writing: [
     { id: 'ars-chat', label: 'ARS 学术助手', page: 'ars-tools', desc: '多轮对话 · localStorage 持久化 · P1/P2 续写 Prompt', action: 'scroll' },
-    { id: 'p1-write', label: 'Paper 1 写作面板', page: 'p1-errors', desc: '路径一诊断稿 · Codex 续写 · 8 项致命问题', fn: 'startPaper1Writing' },
-    { id: 'p2-write', label: 'Paper 2 写作面板', page: 'p2-design', desc: 'GFS 叙事 · Table 2 锁定 · Codex 续写', fn: 'startPaper2Writing' },
+    { id: 'p1-write', label: 'Paper 1 写作面板', page: 'p1-errors', desc: '路径一诊断稿 · 写作续写 · 8 项致命问题', fn: 'startPaper1Writing' },
+    { id: 'p2-write', label: 'Paper 2 写作面板', page: 'p2-design', desc: 'GFS 叙事 · Table 2 锁定 · 写作续写', fn: 'startPaper2Writing' },
     { id: 'playbook', label: '8 条写作实验建议', page: 'design-panorama', desc: 'WRITING_EXPERIMENT_PLAYBOOK · 三篇联动' },
-    { id: 'paper-review', label: '上传 tex AI 审稿', page: 'paper-review', desc: 'Introduction / method / results 分类诊断' },
+    { id: 'paper-review', label: '上传 tex 稿件审阅', page: 'paper-review', desc: 'Introduction / method / results 分类诊断' },
     { id: 'cite-check', label: '文献真实性验证', page: 'cite-check', desc: 'Gray zone = FAIL · 防 hallucination' },
     { id: 'checklist', label: '投稿前 15 项清单', page: 'p1-checklist', desc: 'P1/P2/P3 分开勾选 · Firebase 同步' },
     { id: 'editor', label: '内容编辑器', page: 'editor', desc: '改 config_data.js 等价字段 · 本地+云笔记' },
-    { id: 'tools-github', label: '四 GitHub 交互工作台', page: 'ars-tools', desc: 'Awesome · FigGen · ARS 命令 · 网页内 AI 执行', fn: 'toolkitScrollToWorkbench' },
-    { id: 'tools-install', label: '四工具安装命令', page: 'ars-tools', desc: 'FigGen · 庆研 ARS · Codex · Awesome · DeepSeek bat', fn: 'toolkitScrollToInstall' },
+    { id: 'tools-github', label: '四 GitHub 写作工作台', page: 'ars-tools', desc: 'Awesome · FigGen · ARS 命令 · 网页内 AI 执行', fn: 'toolkitScrollToWorkbench' },
+    { id: 'tools-install', label: '四工具安装命令', page: 'ars-tools', desc: 'FigGen · 庆研 ARS · 本地 ARS · Awesome · DeepSeek bat', fn: 'toolkitScrollToInstall' },
   ],
   figure: [
     { id: 'fig-studio', label: 'Figure Studio', page: 'fig-studio', desc: '流程图 / 架构图 / 对比图 · SVG · Python · PPTX' },
     { id: 'fig-gallery', label: '原理图模板库', page: 'fig-gallery', desc: 'GALLERY_TEMPLATES · 一键载入 Studio' },
     { id: 'fig-pptx', label: '可编辑 PPTX', page: 'fig-studio', desc: 'P1/P2 unified schematic · PowerPoint 精修', fn: 'figRegenUnifiedPptx' },
-    { id: 'fig-ai', label: 'AI 配图建议', page: 'fig-studio', desc: '/api/figure/chat → Codex/Claude · Geophysics 规范', fn: 'figGetAIEnhance' },
+    { id: 'fig-ai', label: '配图建议', page: 'fig-studio', desc: '/api/figure/chat → 本地 API · Geophysics 规范', fn: 'figGetAIEnhance' },
     { id: 'fig-vision', label: '参考图视觉审阅', page: '_blank', url: '/figure_vision_review.html', desc: 'Fang/Wu 参考 PDF · bundle OCR · 交互问答' },
     { id: 'fig-wsl', label: 'WSL 期刊 PDF 重生成', page: 'fig-studio', desc: 'plot_p1/p2_unified · patches/wsl · 7.2in PDF', fn: 'figRenderP1Pdf' },
     { id: 'fig-exports', label: 'fig_exports 预览', page: '_blank', url: '/fig_exports/visual_review/p1_unified_latest.png', desc: 'visual_review 最新 PNG · 与 PPTX 对照' },
   ],
   quickInstall: [
     { label: 'FigGen Skill', cmd: 'npx skills add LigphiDonk/academic-figure-generator' },
-    { label: '庆研 ARS (Claude)', cmd: '/plugin marketplace add Imbad0202/academic-research-skills\n/plugin install academic-research-skills' },
-    { label: 'ARS Codex', cmd: 'python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" --repo Imbad0202/academic-research-skills-codex --ref main --path skills/academic-research-suite --method git' },
+    { label: '庆研 ARS (Anthropic)', cmd: '/plugin marketplace add Imbad0202/academic-research-skills\n/plugin install academic-research-skills' },
+    { label: 'ARS 本地版', cmd: 'python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" --repo Imbad0202/academic-research-skills-codex --ref main --path skills/academic-research-suite --method git' },
     { label: 'Awesome Writing', cmd: 'git clone https://github.com/Leey21/awesome-ai-research-writing.git' },
     { label: '启动 DeepSeek 栈', cmd: 'E:\\个人项目\\启动Codex-DeepSeek.bat' },
   ],
@@ -563,7 +572,7 @@ var TOOLKIT_WORKBENCH = {
     resolutions: ['16:9 · 4K slide', '7.2in single column · Geophysics', '4:3 · C&G', '1:1 · icon'],
     skillSystem:
       'You implement the LigphiDonk/academic-figure-generator skill "academic-figure-prompt". ' +
-      'Output ONE extremely detailed ENGLISH image-generation prompt for NanoBanana/Gemini/DALL-E. ' +
+      'Output ONE extremely detailed ENGLISH image-generation prompt for 图像生成 API. ' +
       'Structure: Global description → === SECTION === blocks → STYLE SPECIFICATIONS with exact hex colors. ' +
       'Rules: white-filled modules, max 3 accent colors, no rainbow gradients, embed monochrome thumbnails in boxes, ' +
       'dimension labels on arrows, Geophysics/C&G publication density. Chinese explanation after the prompt block.',
@@ -716,7 +725,7 @@ function getToolkitSourceFromSnapshot(paperKey, task) {
 /* ════ ARS学术助手系统提示词 ════ */
 var ARS_SYSTEM = `你是一位整合了 Academic Research Skills (ARS) 框架的学术研究助手，专门协助用户完成 GeoFWI 相关的三篇论文。
 
-你的角色设定来自 Imbad0202/academic-research-skills（庆研 · Cheng-I Wu），Codex 用户可改用 academic-research-skills-codex。配套工具链还包括 Leey21/awesome-ai-research-writing（prompt 库）与 LigphiDonk/academic-figure-generator（配图 Skill/平台）。
+你的角色设定来自 Imbad0202/academic-research-skills（庆研 · Cheng-I Wu），本地用户可改用 academic-research-skills-codex。配套工具链还包括 Leey21/awesome-ai-research-writing（prompt 库）与 LigphiDonk/academic-figure-generator（配图 Skill/平台）。
 
 你的核心原则（来自 ARS）：
 1. AI 是副驾驶，不是驾驶员——你协助思考，不替用户决策
@@ -1433,7 +1442,7 @@ var EXPERIMENT_INTEGRITY = {
     'P1-F0：37/55 improved、0/55 converged。Pilot zero-shot CC=0.591；Path B fine-tune CC=0.391。' +
     '贡献定位：可复现基准 + 机制草证 + 负面诊断 + 路线图 — 非 Geophysics 主刊式 SOTA。',
   immediateActions: [
-    'Codex/ARS 润色 path1 叙事（Abstract/Limitations/Applications — 多数已完成）',
+    'ARS 润色 path1 叙事（Abstract/Limitations/Applications — 多数已完成）',
     'PRIORITY #1：bootstrap CI / wall-clock（deferred）',
     'PRIORITY #2：N-stage curriculum 消融（deferred · R1）',
     'Paper 2：tex 投稿壳 — 实验已闭环'
@@ -1458,11 +1467,12 @@ var EXPERIMENT_INTEGRITY = {
 
 /* ════ 三篇投稿战略 · JCR 目标与执行序（2026-06-17 升级） ════ */
 var SUBMISSION_STRATEGY = {
-  updated: '2026-06-17',
-  record: '20260629 发表难度与定位评估.md',
+  updated: '2026-07-05',
+  record: '20260704 三篇实验写作全目录.md',
   barAboveAverageRecord: '20260617 平均略高录用线与提升清单.md',
+  figureBankRecord: '20260705 候补图库备案.md',
   paceNote:
-    'P1/P2 主体约 2 周已完成；抓紧再 2 周 = P2 SEG + P1 C&G/IEEE 投稿版。P3 独立门控（7–12 GPU·day + 写稿），非六周日程。',
+    'P1/P2/P3 主实验 + P3-EXT + 略高包（P1-E9 · P2 physics n5000）已闭环（2026-07-05）。当前阶段 = 写作壳/投稿准备 · 云 GPU 可关。候补图库 45 PDF 就绪。',
   sprintWeeksP1P2: 2,
   ambition: '三篇均瞄准「该刊平均录用线略高」— 实验完整、叙事诚实、可复现、与 Peng/Feng 正面区分',
   sequencing: 'P2（Geophysics）→ P1（C&G / IEEE）→ P3（JGR:ML&C 锚 JCR Q1）',
@@ -1470,8 +1480,8 @@ var SUBMISSION_STRATEGY = {
     platform: 'AutoDL · 4090 24G 独占 · 华北二A',
     rateYuanPerDay: 42,
     dataDiskNote: 'OpenFWI FlatVel-A ~43GB 放数据盘；系统盘 100GB 仅代码+env',
-    p3GateDays: '7–10 天（真 OpenFWI B/C + E9 重跑 24 cells）',
-    p2BoostDays: '1–2 天（可选 OpenFWI GFS 外部验证）',
+    p3GateDays: '✅ 已完成（OpenFWI true B/C + Overthrust + K=20 · 2026-07-05）',
+    p2BoostDays: '✅ physics n5000 + BP2004/OpenFWI probe 已完成',
   },
   papers: {
     p1: {
@@ -1698,7 +1708,7 @@ var BAR_ABOVE_AVERAGE_GUIDE = {
 
 /* ════ 同行审稿分析 · Paper 1/2/3 综合诊断（2026-06-29 · 战略升级 2026-06-17） ════ */
 var PAPER_REVIEW_DASHBOARD = {
-  updated: '2026-06-17',
+  updated: '2026-07-06',
   source: 'index.html · config_data.js（paper_review_dashboard.html 为阶段性静态快照）',
   publishabilityAssessment: {
     inputDate: '2026-06-17',
@@ -1800,12 +1810,18 @@ var PAPER_REVIEW_DASHBOARD = {
   stats: {
     p1Critical: 4,
     p2Critical: 0,
-    p1Status: 'benchmark 终稿',
-    p1StatusNote: 'reframe 完成 · 2026-06-29',
-    p2Status: 'tex 闭环',
-    p2StatusNote: '实验+论证已齐 · 2026-06-29'
+    p1Status: 'benchmark 终稿 + P1-E9 Appendix',
+    p1StatusNote: '实验闭环 · 候补图库 · 差 Zenodo/ORCID · 2026-07-05',
+    p2Status: 'tex 闭环 · Geophysics W1',
+    p2StatusNote: 'physics n5000 ✅ · 21pp · SEG 投稿壳 pending · 2026-07-05',
+    p3Status: '实验+稿 v1 闭环',
+    p3StatusNote: '13pp+Appendix · Overthrust+K20 · JGR 模板 pending · 2026-07-05'
   },
   overview: [
+    {
+      title: '项目状态（2026-07-05）',
+      text: '三篇主实验 + 略高包 + P3-EXT 已闭环。候补图库 45 PDF。当前 = 改稿 + 投稿壳（ORCID/Zenodo/SEG/AGU）· 云 GPU 可关。根目录 PDF：Paper1_main · Paper2_manuscript_draft · Paper3_manuscript_draft。'
+    },
     {
       title: '投稿战略（2026-06-17）',
       text: 'P2 冲 Geophysics（JCR Q1），保 JCR Q2 应用地球物理刊；P1 冲 C&G 或 IEEE TGRS/TCI；P3 锚 JGR:ML&C Q1。三篇均瞄准平均录用线略高：可复现 + 诚实负结果 + 竞品正面区分。'
@@ -1830,7 +1846,7 @@ var PAPER_REVIEW_DASHBOARD = {
   p1: {
     critical: [
       { id: 'C1', title: 'Task identity crisis', text: '标题/Abstract 说 FWI，但 audited task 是 velocity-proxy reconstruction。', fix: '彻底改写为 Velocity-Domain Reconstruction Benchmark。main.tex 标题已部分修正，需全文一致性检查。' },
-      { id: 'C2', title: 'Baselines 显著优于 GC-FWI', text: 'U-Net CC=0.916 vs GC-FWI 0.859；GFS 0.580 vs 0.344。', fix: '✅ P1-NICHE 已完成：无 GCI level 达 45% win-rate；ablation 仍是正面信号。' },
+      { id: 'C2', title: 'Baselines 显著优于 GC-FWI', text: 'U-Net CC=0.916 vs GC-FWI 0.859；GFS 0.580 vs 0.344。', fix: '[DONE] P1-NICHE 已完成：无 GCI level 达 45% win-rate；ablation 仍是正面信号。' },
       { id: 'C3', title: 'Physics score = 0 for all methods', text: 'proximal guidance 是核心卖点，但 physics metric 全 0。', fix: '分级 physics score；或连接 P1-F0 37/55；或降级 contribution 声明。' },
       { id: 'C4', title: 'WaveDiffusion 竞争威胁', text: 'arXiv:2410.09002 未充分实验对比。', fix: 'GeoFWI high-GCI (Levels 8-11) 展示 implicit latent scoring 失效；或诚实承认 low-complexity 差异有限。' }
     ],
@@ -1895,10 +1911,10 @@ var PAPER_REVIEW_DASHBOARD = {
 
 /* ════ 可执行优先级 · 三篇 JCR 投稿序（2026-06-17 · 见 SUBMISSION_STRATEGY） ════ */
 var OPERATIONAL_PRIORITY = {
-  updated: '2026-06-17',
+  updated: '2026-07-05',
   premise:
-    'P1/P2 主体 ~2 周已完成 · 再 2 周冲刺 = 投稿版（P2 SEG → P1 C&G/IEEE）· P3 独立 GPU 门控',
-  rule: '两冲刺周 P2+P1 投稿 → P3 云 GPU + 全稿 · 勿跳过 OpenFWI 真实验',
+    '三篇实验已闭环 · 候补图库 45 PDF · 当前 = 写作壳 + ORCID/Zenodo + 投稿（零 GPU）',
+  rule: 'P2 SEG 首投 → P1 C&G → P3 JGR 壳 · 勿再开 GPU 除非修订',
   strategyRef: 'SUBMISSION_STRATEGY',
   sprintWeeksP1P2: 2,
   phases: [
@@ -1925,15 +1941,12 @@ var OPERATIONAL_PRIORITY = {
     },
     {
       id: 'P3',
-      label: 'P3 · P1/P2 投稿后（7–12 GPU·day + 写稿）',
-      gpu: '7–12 天',
+      label: 'P3 · 实验✅ · JGR 投稿壳 + AGU 模板',
+      gpu: '0',
       items: [
-        { id: 'P3-DATA', task: '数据盘挂载 · OpenFWI FlatVel-A ~43GB', gpu: 0, hours: 4 },
-        { id: 'P3-PRETRAIN-BC', task: '真预训练 corpus B + C（同架构 GC-FWI）', gpu: 5, hours: 80 },
-        { id: 'P3-E9-RERUN', task: 'E9 B/C 24 cells × 3 seeds 重跑', gpu: 2, hours: 36 },
-        { id: 'P3-E8-FIG', task: 'MMD 机制图 + Tier-2 降级 Supp', gpu: 0, hours: 8 },
-        { id: 'P3-TEX', task: 'main.tex 全稿 · Intro–Limitations · Feng/Peng 区分', gpu: 0, hours: 40 },
-        { id: 'P3-SUBMIT', task: 'JGR:ML&C 首投', gpu: 0, hours: 6 },
+        { id: 'P3-TEX-POLISH', task: 'agujournal2025.cls 迁移 · PLS/Open Research 终检', gpu: 0, hours: 8 },
+        { id: 'P3-DOI', task: 'Code/Data DOI · 与 P1/P2 互引终检', gpu: 0, hours: 4 },
+        { id: 'P3-SUBMIT', task: 'JGR:ML&C 首投（P2/P1 后）', gpu: 0, hours: 6 },
       ],
     },
   ],
@@ -2343,16 +2356,17 @@ var PAPER1_WRITING_STATUS = {
   },
   paper2Separation: 'Paper 2 denoising CC≈0.99 must NOT enter Paper 1 Table 1',
   writingOrder: [
-    '通读 paper1/manuscript/main.pdf + tbl:evidence_map',
+    '通读 Paper1_main.pdf（根目录）· evidence map · P1-E9 Appendix',
     'Abstract/Limitations/Applications 润色（ARS 批量 — 多数已 apply）',
     '终稿核对：JSON 数字 ↔ Table 1 ↔ Abstract',
     'Discussion：37/55 · K0 p=1.0 · w/o both 非加性 · niche 无 win-rate',
-    'deferred：bootstrap CI · wall-clock · N-stage ablation',
+    'bootstrap CI 已入候补图库 · wall-clock/N-stage 仍 deferred',
     '选刊压缩：C&G 主投 · IEEE TGRS 备选'
   ],
   manuscriptDraft: {
     tex: 'paper1/manuscript/main.tex',
     pdf: 'paper1/manuscript/main.pdf',
+    rootPdf: 'Paper1_main.pdf',
     statusReport: '20260627 Paper1路径一定稿状态.md',
     experimentLog: 'paper1/EXPERIMENT_LOG.md',
     nearTermPlan: 'paper1/experiments/NEAR_TERM_PLAN.md'
@@ -2362,18 +2376,18 @@ var PAPER1_WRITING_STATUS = {
     'GC-FWI 未赢 U-Net/PINN — 必须写进 Abstract/Conclusion。' +
     'pilot/Path B 不进 Table 1。Paper 2 CC≈0.99 禁止混入。' +
     'physics_score 全 0 已省略。venue：诊断/框架 — 非 Geophysics 现场 SOTA。',
-  sessionLog: 'paper1/drafts/CODEX_WRITING_SESSION.md',
+  sessionLog: 'paper1/drafts/WRITING_SESSION.md',
   arsBootstrapPrompt:
-    CODEX_WRITING_SESSION_PROTOCOL + '\n\n' +
+    WRITING_SESSION_PROTOCOL + '\n\n' +
     '---\n\n' +
-    '我是 Paper 1（路径一 · 诊断性框架稿）作者。日志：`paper1/drafts/CODEX_WRITING_SESSION.md` · tex：`paper1/manuscript/main.tex`。\n\n' +
+    '我是 Paper 1（路径一 · 诊断性框架稿）作者。日志：`paper1/drafts/WRITING_SESSION.md` · tex：`paper1/manuscript/main.tex`。\n\n' +
     '【写作纪律】数字不得改；勿声称 GC-FWI SOTA；基线 U-Net/PINN 显著更好必须保留；' +
     'pilot CC=0.591 与 Path B CC=0.391 为独立诊断表；任务=velocity-proxy 非炮集 FWI。\n\n' +
     '若日志已存在 → 先读 RUNNING_STATE 续写；若不存在 → 初始化 RUNNING_STATE。\n' +
     'Conclusion/Limitations/Abstract 诊断版已 apply；优先终稿数字核对与 venue 压缩。'
 };
 
-/* Paper 1 · ARS/Codex 粘贴块（网页无法读 tex 路径，关键段落嵌在此处） */
+/* Paper 1 · ARS 粘贴块（网页无法读 tex 路径，关键段落嵌在此处） */
 var PAPER1_ARS_SNIPPETS = {
   evidenceMapNote:
     '贡献须按 tbl:evidence_map 分层：proxy 主表 = 完整可复现基准（负面：扩散+物理未赢编码器）；' +
@@ -2422,7 +2436,7 @@ var PAPER1_ARS_SNIPPETS = {
         '请给出 LaTeX-ready rewrite（\\section{Applications} + \\subsection{Practical Applications...}）+ 中文修改说明。';
     },
     figures: function() {
-      return '【任务】Paper 1 主图 path-1（5 张）— 见 paper1/drafts/CODEX_FIGURES_PROMPT.md 全文。\n\n' +
+      return '【任务】Paper 1 主图 path-1（5 张）— 见 paper1/drafts/FIGURES_PROMPT.md 全文。\n\n' +
         '优先 F1 pipeline schematic + F2 proxy metrics bars（JSON 驱动）。禁 gc_fwi_professional.py 合成 batch。\n\n' +
         'JSON: metrics_canonical_test5000.json · unet/pinn *_proxy.json · 输出 paper1/manuscript/Fig/';
     },
@@ -2517,14 +2531,15 @@ var PAPER2_WRITING_STATUS = {
     task: 'velocity_denoising_reconstruction（非炮集 FWI）'
   },
   writingOrder: [
-    '通读 paper2_manuscript_draft.pdf（~19pp）· 对照 review fixes 2026-06-28',
+    '通读 Paper2_manuscript_draft.pdf（根目录 · 21pp）· Geophysics abstract 合规',
     '填作者单位 · GitHub/Zenodo 终链替换 Code availability 占位',
-    'C&G Highlights/Keywords 系统提交',
+    'Highlights 终检 · SEG 门户提交',
     '可选：Discussion 再压缩 · Overfull hbox 换行'
   ],
   manuscriptDraft: {
     tex: 'paper2/drafts/paper2_manuscript_draft.tex',
     pdf: 'paper2/drafts/paper2_manuscript_draft.pdf',
+    rootPdf: 'Paper2_manuscript_draft.pdf',
     highlights: 'paper2/drafts/paper2_highlights.txt',
     narrativeGuide: 'paper2/drafts/NARRATIVE_REVISION_GUIDE.md',
     alignment: 'paper2/drafts/ALIGNMENT_NOTE.md',
@@ -2536,11 +2551,11 @@ var PAPER2_WRITING_STATUS = {
     '主数字：EXPERIMENT_LOG.md + narrative_supplements.json。叙事修订已入 tex。' +
     '勿用 demo ρ≈0.67。E5 gfs_better=false=适用边界，非 GFS 失效。' +
     'τ p50–60 时 gc_fwi GFS 可高于 unet。任务=velocity-denoising。',
-  sessionLog: 'paper2/drafts/CODEX_WRITING_SESSION.md',
+  sessionLog: 'paper2/drafts/WRITING_SESSION.md',
   arsBootstrapPrompt:
-    CODEX_WRITING_SESSION_PROTOCOL + '\n\n' +
+    WRITING_SESSION_PROTOCOL + '\n\n' +
     '---\n\n' +
-    '我是 Paper 2（Computers & Geosciences）作者。日志：`paper2/drafts/CODEX_WRITING_SESSION.md` · tex：`paper2/drafts/paper2_manuscript_draft.tex`。\n\n' +
+    '我是 Paper 2（Computers & Geosciences）作者。日志：`paper2/drafts/WRITING_SESSION.md` · tex：`paper2/drafts/paper2_manuscript_draft.tex`。\n\n' +
     '【写作纪律】数字不得改；勿新增文献/实验；任务=velocity-denoising 非炮集 FWI。\n\n' +
     '若日志已存在 → 先读 RUNNING_STATE 续写；若不存在 → 初始化（pending: Intro §2 压缩, Discussion §2–3, 作者单位, Highlights）。\n' +
     '实验已闭环；勿再跑 GPU。'
@@ -2548,8 +2563,8 @@ var PAPER2_WRITING_STATUS = {
 
 /* ════ Paper 3 写作状态（Phase C · 锚 JCR Q1 · 2026-06-17） ════ */
 var PAPER3_WRITING_STATUS = {
-  updated: '2026-06-17',
-  phase: 'gpu_and_manuscript_required',
+  updated: '2026-07-05',
+  phase: 'manuscript_shell_jgr',
   venuePrimary: 'JGR: Machine Learning and Computation (JCR Q1 · AGU)',
   venueAnchor: ['IEEE TGRS', 'Geophysics (Letter)'],
   venueBackup: ['Computers & Geosciences', 'Geophysical Journal International'],
@@ -2558,38 +2573,46 @@ var PAPER3_WRITING_STATUS = {
   wslRoot: '/root/projects/bp-diff-fwi-complex/paper3',
   publishabilityDoc: 'paper3/experiments/P3_PUBLISHABILITY_ASSESSMENT.md',
   experimentMatrix: 'paper3/experiments/P3_EXPERIMENT_MATRIX.md',
-  gate: 'OpenFWI FlatVel-A 真 B/C 预训练完成前禁止写定 Intro 主 claim',
-  cloudPlan: { platform: 'AutoDL 4090', rateYuanPerDay: 42, gpuDays: '7–12' },
+  gate: '✅ OpenFWI true B/C + Overthrust + K=20 已完成（2026-07-05）',
+  cloudPlan: { platform: 'AutoDL 4090', rateYuanPerDay: 42, gpuDays: '✅ 已闭环' },
+  manuscriptDraft: {
+    tex: 'paper3/drafts/paper3_manuscript_draft.tex',
+    pdf: 'paper3/drafts/paper3_manuscript_draft.pdf',
+    rootPdf: 'Paper3_manuscript_draft.pdf',
+    figureBank: 'fig_exports/supplementary_bank/p3/',
+  },
   completed: [
     { id: 'P3-E1', status: 'done', note: '目标域预处理 + baseline 指标' },
-    { id: 'P3-E9-plan', status: 'done', note: 'A/B/C 矩阵协议 · surrogate 冒烟已跑' },
-    { id: 'scheme_b', status: 'done', note: 'VMB/RTM-conditioned · 与 Feng 叙事区分' },
+    { id: 'P3-E9-openfwi', status: 'done', note: '真 B/C 36 cells + Overthrust 18 · 2026-07-05' },
+    { id: 'P3-E10-K20', status: 'done', note: 'Tier-2 K=20 sensitivity · Appendix' },
+    { id: 'P3-E8-fig', status: 'done', note: 'MMD 机制图 · 候补图库' },
+    { id: 'main.tex', status: 'done', note: '13pp + Appendix Overthrust · PLS/Open Research' },
+    { id: 'figure-bank', status: 'done', note: '45 PDF · 20260705 候补图库备案.md' },
   ],
   pending: [
-    { id: 'OpenFWI-BC', note: '真预训练 corpus B + C · AutoDL 数据盘 ~43GB' },
-    { id: 'P3-E9-rerun', note: 'B/C 24 cells × 3 seeds 重跑' },
-    { id: 'P3-E8-fig', note: 'MMD 机制图（略高加分）' },
-    { id: 'main.tex', note: '全稿 Intro–Limitations' },
-    { id: 'P1-P2-xref', note: '三篇关系段 · GFS_λ 引用 P2' },
+    { id: 'agujournal2025', note: 'AGU LaTeX 模板迁移' },
+    { id: 'ORCID-DOI', note: '通讯作者 ORCID · Code/Data DOI' },
+    { id: 'P1-P2-xref', note: '三篇互引终检（Intro 已有草稿）' },
   ],
 };
 
 /* Paper 2 · ARS 粘贴块（网页无法读 tex 路径，全文嵌在此处） */
 var PAPER2_ARS_SNIPPETS = {
   rankingInversionNote:
-    '「颠倒动机」≠ 表格行顺序反转。含义是：在 n=5000 GeoFWI denoising 上，' +
-    '按 CC 排名的冠军（gc_fwi，mean CC=0.988）与按 GFS 排名的冠军（unet，mean GFS=0.630）' +
-    '不是同一方法——像素最优 ≠ 结构最优。相对 GFS 差距约 12%。这是真实多方法对比，比 E7 合成实验更有说服力。',
+    '「排名解耦」≠ 表格行顺序反转。在 n=5000 GeoFWI denoising、official-val τ≈180 上，' +
+    '七种方法的 CC 排名与 GFS 排名系统性不一致（Spearman ρ≈0.023，p≈0.11）。' +
+    'gc_fwi 同时 lead mean CC（0.988）与 mean GFS（0.604）；unet 次之（0.986 / 0.554）。' +
+    '主叙事是 cross-method metric decoupling；勿写「unet GFS 最高」——该表述仅属已退役 τ≈473 脚注。',
   table2: [
     'Method          | mean CC | mean GFS',
-    'gc_fwi          | 0.988   | 0.562   ← CC 最高，GFS 仅第 5',
-    'pinn            | 0.987   | 0.618',
-    'unet            | 0.986   | 0.630   ← GFS 最高',
-    'gc_fwi_rin      | 0.983   | 0.496',
-    'lstm            | 0.979   | 0.614',
-    'gc_fwi_transformer | 0.977 | 0.488',
-    'transformer     | 0.967   | 0.598',
-    '(n=5000, τ≈473, source: p2_e2_geofwi_manifest.json)'
+    'gc_fwi          | 0.988   | 0.604   ← CC 与 GFS 均最高（τ≈180）',
+    'unet            | 0.986   | 0.554',
+    'pinn            | 0.987   | 0.532',
+    'gc_fwi_rin      | 0.983   | 0.541',
+    'lstm            | 0.979   | 0.528',
+    'gc_fwi_transformer | 0.977 | 0.500',
+    'transformer     | 0.967   | 0.487',
+    '(n=5000, τ≈180.0, source: p2_e2_geofwi_manifest.json · 2026-06-28)'
   ].join('\n'),
   introPara2:
     'Unfortunately, all three metrics treat every pixel equally and remain insensitive to the geological ' +
@@ -2914,7 +2937,7 @@ var FIG_REFERENCE_FLOWS = [
     source: 'Data-driven low-frequency…pdf · p3',
     previewImage: 'fig_exports/ref_pdf_pages/data-driven_low-frequency_signal_recover_p3.png',
     paperRef: 'Geophysics · 仅作语汇参考',
-    desc: '⚠ 接近原图布局 · 投稿建议改用「杂糅综合」',
+    desc: '[NOTE] 接近原图布局 · 投稿建议改用「杂糅综合」',
     modes: ['workflow', 'arch'],
     singlePaper: true
   },
@@ -2934,7 +2957,7 @@ var FIG_REFERENCE_FLOWS = [
     source: 'Deep learning for multidimensional seismic…pdf · p5',
     previewImage: 'fig_exports/ref_pdf_pages/deep_learning_for_multidimensional_seism_p5.png',
     paperRef: 'Geophysics · 仅作语汇参考',
-    desc: '⚠ 接近原图布局 · 投稿建议改用「杂糅综合」',
+    desc: '[NOTE] 接近原图布局 · 投稿建议改用「杂糅综合」',
     modes: ['workflow', 'arch'],
     singlePaper: true
   },
@@ -3117,8 +3140,8 @@ var GALLERY_TEMPLATES = [
 
 /* ════ OpenClaw 半私人版 — 远程 GPU 自主实验台 ════ */
 var OPENCLAW = {
-  title: 'OpenClaw 智能体自主实验工作台',
-  subtitle: 'ReAct 循环：本地 Codex/Claude 思考 → AutoDL 远程执行 PyTorch/Devito 代码',
+  title: 'OpenClaw 自主实验工作台',
+  subtitle: 'ReAct 循环：本地助手思考 → AutoDL 远程执行 PyTorch/Devito 代码',
   maxTurns: 6,
   confirmBeforeExecute: true,
   confirmBeforeExecuteHint: '默认开启：每轮 write_file/run_code 执行前弹窗确认。可在 OpenClaw 页取消勾选「自动执行」。',
@@ -3455,7 +3478,7 @@ var MINIMAL_EXP_MATRIX = {
 var RESEARCH_WORKSPACE = {
   name: 'bp-diff-fwi-complex',
   description: 'GC-FWI / GFS / 迁移学习 — 三篇论文统一代码与实验目录（约 7.6G）',
-  integrityStatus: '2026-06-29: 同行审稿分析入 advisor · P2 tex 修复进行中 · P1 w/o both 消融待跑',
+  integrityStatus: '2026-06-29: 同行审稿分析入顾问页 · P2 tex 修复进行中 · P1 w/o both 消融待跑',
   paperPriority: 'Day1 P2 review fixes (τ/std/Peng-Feng) → P1 w/o both ablation → P2 physics n≥500 → P2 先投 Geophysics',
   wslDistro: 'Ubuntu-22.04',
   linuxPath: '/root/projects/bp-diff-fwi-complex',
@@ -3479,13 +3502,13 @@ var RESEARCH_WORKSPACE = {
   ],
   keyDocs: [
     { path: 'GeoFWI_全流程操作手册.md', desc: '主操作手册 v3.4.2 · Phase 门控 · 按天命令' },
-    { path: 'paper2/drafts/paper2_manuscript_draft.tex', desc: 'Paper 2 LaTeX 初稿（Codex 2026-06-24）' },
+    { path: 'paper2/drafts/paper2_manuscript_draft.tex', desc: 'Paper 2 LaTeX 初稿（2026-06-24）' },
     { path: 'paper2/drafts/ALIGNMENT_NOTE.md', desc: '初稿 vs paper2_gfs 公式对齐说明' },
     { path: 'docs/INTEGRATION_WSL.md', desc: 'geofwi_physics_core 接入 · P1-F0 · 预算' },
     { path: 'advisor/index.html', desc: 'Paper Advisor 主副本 · start_advisor.sh 启动' },
     { path: 'docs/advisor/index.html', desc: 'Paper Advisor 镜像（与 advisor/ 同步）' },
     { path: 'advisor/config_data.js', desc: '顾问数据 v3.4.2 · 须与 index.html 成对更新' },
-    { path: 'paper2/README.md', desc: 'Paper 2 独立工程 · GFS 实验 + Codex 审查' },
+    { path: 'paper2/README.md', desc: 'Paper 2 独立工程 · GFS 实验 + 文稿审查' },
     { path: '项目管理与全流程风险.md', desc: '环境踩坑 · 路径 · 三篇隔离' },
     { path: 'DATA_PROVENANCE.md', desc: '指标/data 真实性' }
   ],
@@ -4126,8 +4149,8 @@ var MAIN_TEX_FIXES = {
 
 /* ════ 审稿理论审计（2026-06 文献核实结论） ════ */
 var THEORY_AUDIT = {
-  title: '审稿理论审计',
-  subtitle: '基于原始文献核查：纠正引用逻辑倒置、事实性错误与未验证假设 — 编辑本对象后刷新「审稿理论审计」页',
+  title: 'Theory audit for peer review',
+  subtitle: 'Literature fact-check: citation logic, factual errors, unverified assumptions — edit THEORY_AUDIT and refresh',
   updated: '2026-06-19',
   executiveSummary:
     'Paper 1 (2026-06-17): integrity fatals resolved — Table 1 audited JSON, Remark 1 replaces Proposition 1, ' +
@@ -4164,12 +4187,12 @@ var THEORY_AUDIT = {
         'GCI warm start 如何使梯度引导落在可收敛盆地？N=1 ablation [TBD]'
       ],
       actions: [
-        { priority: 0, text: '✅ Remark 1 + P1-F0 — done; optional Fig. residual_vs_k for supplement', cost: 'resolved' },
+        { priority: 0, text: '[DONE] Remark 1 + P1-F0 — done; optional Fig. residual_vs_k for supplement', cost: 'resolved' },
         { priority: 1, text: 'Related Work 末尾编号区分清单 — #2', cost: '写作 · optional' },
-        { priority: 2, text: '✅ Table 1 GFS + Limitations — done', cost: 'resolved' },
+        { priority: 2, text: '[DONE] Table 1 GFS + Limitations — done', cost: 'resolved' },
         { priority: 3, text: 'Method ms/step wall-clock — fill [TBD] until GPU benchmark', cost: 'deferred' },
         { priority: 4, text: '核实 \\cite{shen2024posterior,li2024seisfusion}', cost: '免费 · optional' },
-        { priority: 5, text: '✅ ε_design / ε_gate / ε_rms — done in main.tex', cost: 'resolved' }
+        { priority: 5, text: '[DONE] ε_design / ε_gate / ε_rms — done in main.tex', cost: 'resolved' }
       ],
       networkAdvice: {
         title: '细节补充：有色噪声与正演误差（近端引导版）',
@@ -4195,7 +4218,7 @@ var THEORY_AUDIT = {
         reality:
           'main.tex 2026-06-17：Remark 1 only（not verified）+ P1-F0 37/55；Algorithm 1 用 K-step gradient proximal。',
         consequence:
-          '若 ARS/Codex 仍建议「诚实降级 Proposition 1」→ 忽略；勿重新插入命题环境。',
+          '若润色工具仍建议「诚实降级 Proposition 1」→ 忽略；勿重新插入命题环境。',
         correction:
           '保持现状；写作时引用 P1-F0 与 tbl:ablation，区分 training-time physics weight vs sampling-time K hook。',
         mustAnswer: [
@@ -4203,7 +4226,7 @@ var THEORY_AUDIT = {
           'K=5 是否保证 CC 提升？— 否，K0 p=1.0'
         ],
         actions: [
-          { priority: 1, text: '✅ 已完成 — 勿再改回 Proposition 1', cost: 'resolved' },
+          { priority: 1, text: '[DONE] 已完成 — 勿再改回 Proposition 1', cost: 'resolved' },
           { priority: 2, text: '全文保持 Proximal Guidance 术语', cost: 'ongoing discipline' }
         ]
       },
@@ -4436,8 +4459,8 @@ var THEORY_AUDIT = {
 
 /* ════ 三篇论文核心设计思路全景（整合致命错误+文献+对比+图表） ════ */
 var DESIGN_PANORAMA = {
-  title: 'GeoFWI 三篇论文：核心设计与思路全景',
-  subtitle: '整合致命错误清单、42篇文献库、技术对比矩阵、图表逻辑与审稿理论审计',
+  title: 'Three-paper GeoFWI: core design panorama',
+  subtitle: 'Fatal errors, 42-paper literature KB, tech matrix, figure logic, and theory audit',
   positioningAscii:
     '        物理梯度引导\n' +
     '            ↑\n' +
