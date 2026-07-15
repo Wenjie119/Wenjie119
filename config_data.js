@@ -29,14 +29,14 @@
    ㉔ Submission      → SUBMISSION_STRATEGY
    ㉔b Above-average  → BAR_ABOVE_AVERAGE_GUIDE
    ㉔ Writing tools   → RESEARCH_WRITING_TOOLS
-   ㉕ AI stack         → AI_STACK_CONFIG
+   ㉕ AI stack         → AI_STACK_CONFIG · CLAUDE_MODEL_PRESETS · AGENT_MODEL_ROUTING
    ㉖ Figure hub       → WRITING_FIGURE_HUB
    ㉗ Toolkit bench    → TOOLKIT_WORKBENCH
    Save and refresh the browser — no server restart required.
 ================================================================= */
 
-var CONFIG_VERSION = '3.15.1';
-var CONFIG_UPDATED = '2026-07-06 · Pages 审稿 + 四 GitHub 栏 + P1 41pp Appendix';
+var CONFIG_VERSION = '3.15.4';
+var CONFIG_UPDATED = '2026-07-06 · AGENT_MODEL_ROUTING + Opus setup bat';
 
 /* ════ 根目录草稿 PDF（与 sync_project_snapshot rootPdfs 一致） ════ */
 var ADVISOR_ROOT_PDFS = {
@@ -44,8 +44,8 @@ var ADVISOR_ROOT_PDFS = {
   p1: { file: 'Paper1_main.pdf', source: 'paper1/manuscript/main.pdf', pages: '~56+' },
   p2: { file: 'Paper2_manuscript_draft.pdf', source: 'paper2/drafts/paper2_manuscript_draft.pdf', pages: '21' },
   p3: { file: 'Paper3_manuscript_draft.pdf', source: 'paper3/drafts/paper3_manuscript_draft.pdf', pages: '13+Appendix' },
-  figureBank: { manifest: 'fig_exports/supplementary_bank/manifest.json', record: '20260705 候补图库备案.md', n: 45 },
-  indexDocs: ['20260704 三篇实验写作全目录.md', '20260705 三篇写作修复清单.md', '20260705 候补图库备案.md'],
+  figureBank: { manifest: 'fig_exports/supplementary_bank/manifest.json', record: '项目备案.md', n: 45 },
+  indexDocs: ['项目备案.md'],
 };
 
 /* ════ Writing session persistence (survives refresh / new window) ════ */
@@ -171,6 +171,10 @@ function buildCodexProjectPrompt(paperKey, mode) {
   parts.push('\n[Write-back] After editing WSL tex, update `' +
     (WRITING_SESSION_PATHS[paperKey] ? WRITING_SESSION_PATHS[paperKey].logRel : 'WRITING_SESSION.md') +
     '` and re-sync the project snapshot.');
+
+  if (typeof buildAgentModelRoutingPrompt === 'function') {
+    parts.push('\n' + buildAgentModelRoutingPrompt());
+  }
 
   return parts.filter(Boolean).join('\n');
 }
@@ -384,9 +388,135 @@ var RESEARCH_WRITING_TOOLS = {
   ],
 };
 
+/* ════ Claude / CC Switch 模型预设（网页 API 设置 · 一键切换） ════ */
+var CLAUDE_MODEL_PRESETS = [
+  {
+    id: 'deepseek',
+    label: 'DeepSeek v4 Pro',
+    hint: '默认 · CC Switch DeepSeek 路由 · 日常写作/润色',
+    model: 'deepseek-v4-pro',
+    syncAnthropic: false,
+  },
+  {
+    id: 'sonnet45',
+    label: 'Claude Sonnet 4.5',
+    hint: '平衡 · 代码/审稿 · CC Switch 切 Claude 后选此项',
+    model: 'claude-sonnet-4-5-20250929',
+    syncAnthropic: true,
+  },
+  {
+    id: 'sonnet46',
+    label: 'Claude Sonnet 4.6',
+    hint: '较新 Sonnet · 需 CC Switch / Key 支持该 ID',
+    model: 'claude-sonnet-4-6',
+    syncAnthropic: true,
+  },
+  {
+    id: 'opus47',
+    label: 'Claude Opus 4.7',
+    hint: '最强推理 · 非 Sonnet · 慢/贵 · 复杂审稿用',
+    model: 'claude-opus-4-7',
+    syncAnthropic: true,
+  },
+  {
+    id: 'sonnet4',
+    label: 'Claude Sonnet 4',
+    hint: '20250514 快照 · 旧版兼容',
+    model: 'claude-sonnet-4-20250514',
+    syncAnthropic: true,
+  },
+  {
+    id: 'sonnet37',
+    label: 'Claude Sonnet 3.7',
+    hint: 'fallback · 部分代理仍可用',
+    model: 'claude-3-7-sonnet-20250219',
+    syncAnthropic: true,
+  },
+  {
+    id: 'custom',
+    label: '自定义 model ID',
+    hint: '手动输入 · 同步到 CC Switch 与 Anthropic 下拉',
+    model: '',
+    syncAnthropic: true,
+  },
+];
+
+/* ════ Agent / Cursor 模型路由（主配置 · 优先于网页 preset） ════ */
+var AGENT_MODEL_ROUTING = {
+  updated: '2026-07-06',
+  priorityNote:
+    'Cursor / Auto / 本地 Codex CLI 以本节为准。网页 API Settings 的 preset 仅为 serve_geofwi 镜像，非主入口。',
+  ccSwitch: {
+    port: 15721,
+    deepseekRoute: 'CC Switch provider = DeepSeek',
+    claudeRoute: 'CC Switch provider = Claude / Anthropic（Opus 与 Sonnet 均须此路由）',
+  },
+  models: {
+    deepseek: {
+      id: 'deepseek-v4-pro',
+      label: 'DeepSeek v4 Pro',
+      preset: 'deepseek',
+      launch: '启动Codex-DeepSeek.bat',
+      setup: 'E:\\DevTools\\scripts\\setup-codex-deepseek.ps1',
+    },
+    sonnet45: {
+      id: 'claude-sonnet-4-5-20250929',
+      label: 'Claude Sonnet 4.5',
+      preset: 'sonnet45',
+      launch: 'CC Switch Claude 路由 + model ID（或网页 preset sonnet45）',
+    },
+    sonnet46: {
+      id: 'claude-sonnet-4-6',
+      label: 'Claude Sonnet 4.6',
+      preset: 'sonnet46',
+    },
+    opus47: {
+      id: 'claude-opus-4-7',
+      label: 'Claude Opus 4.7',
+      preset: 'opus47',
+      launch: '启动Codex-Opus.bat',
+      setup: 'scripts/setup-codex-opus.ps1',
+      note: '无 Sonnet 4.7；4.7 仅指 Opus。云端 API，不下载权重。',
+    },
+  },
+  whenToUse: {
+    deepseek: [
+      '日常 tex 润色、批量替换、脚本/实验 runner',
+      'fig 脚本、WSL patch、低成本迭代',
+      '用户未明确要求更强模型时的默认选择',
+    ],
+    sonnet45: [
+      '单篇审稿、ARS 对话、Introduction/Discussion 压缩',
+      '代码审查（paper2 codex_review 同级任务）',
+      '中等复杂度、需要平衡质量与速度',
+    ],
+    opus47: [
+      '三篇联动战略、THEORY_AUDIT / fixQueue Critical',
+      '多假设权衡、投稿顺序、竞争格局修订',
+      '用户明确说「用 Opus」「最强」「复杂审稿」',
+      'Sonnet 两轮仍漏逻辑/物理错误时再升级',
+    ],
+  },
+  noAnthropicKey:
+    '无 Anthropic API Key 时：Codex/CC Switch 仅用 DeepSeek；Sonnet/Opus 15721 路由不可用。复杂写作在 Cursor 对话或 Gemini Key（网页）。',
+  agentBlock:
+    '【模型路由 · Agent 必读】\n' +
+    '0) 无 Anthropic Key：15721 仅 DeepSeek；勿推荐 Opus/Sonnet 除非用户已配 Key。\n' +
+    '1) 默认 DeepSeek `deepseek-v4-pro`（`启动Codex-DeepSeek.bat`）。\n' +
+    '2) 有 Key 时：常规定稿/审稿 Sonnet 4.5 `claude-sonnet-4-5-20250929`。\n' +
+    '3) 有 Key 时：复杂推理/理论审计 Opus 4.7 `claude-opus-4-7`。\n' +
+    '4) 不存在 Sonnet 4.7；用户说「4.7」即 Opus。\n' +
+    '5) 润色 tex 时删除 withdrawn/Completed/placeholder/demo 等内部痕迹，不改 locked 数字。\n',
+};
+
+function buildAgentModelRoutingPrompt() {
+  if (typeof AGENT_MODEL_ROUTING === 'undefined') return '';
+  return AGENT_MODEL_ROUTING.agentBlock;
+}
+
 /* ════ 当前 AI 栈（CC Switch → DeepSeek · 本机实测 2026-06-17） ════ */
 var AI_STACK_CONFIG = {
-  updated: '2026-06-17',
+  updated: '2026-07-06',
   summary:
     'CC Switch 在 127.0.0.1:15721 提供 Anthropic Messages 兼容代理；本地 CLI 与网页 serve_geofwi 均走此端口。' +
     '同一代理可切换 DeepSeek 或 Claude 路由（取决于 CC Switch 当前选中 provider）。',
@@ -397,6 +527,9 @@ var AI_STACK_CONFIG = {
     messagesUrl: 'http://127.0.0.1:15721/v1/messages',
     healthUrl: 'http://127.0.0.1:15721/health',
     bat: '启动Codex-DeepSeek.bat',
+    opusBat: '启动Codex-Opus.bat',
+    opusSetupScript: 'scripts/setup-codex-opus.ps1',
+    opusModel: 'claude-opus-4-7',
   },
   codexCli: {
     package: '@openai/codex',
@@ -412,10 +545,12 @@ var AI_STACK_CONFIG = {
     wireApi: 'responses',
   },
   alternateModels: {
-    claudeViaCC: 'claude-sonnet-4-20250514',
-    anthropicDirect: 'claude-sonnet-4-20250514',
+    claudeViaCC: 'claude-sonnet-4-5-20250929',
+    anthropicDirect: 'claude-sonnet-4-5-20250929',
     gemini: 'gemini-2.0-flash',
   },
+  defaultPreset: 'deepseek',
+  presetStoreKey: 'model_preset',
   webRouter: {
     storeKey: 'geofwi_apikeys_v1',
     defaultRoute: 'auto',
@@ -467,6 +602,7 @@ var WRITING_FIGURE_HUB = {
     { label: 'ARS 本地版', cmd: 'python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py" --repo Imbad0202/academic-research-skills-codex --ref main --path skills/academic-research-suite --method git' },
     { label: 'Awesome Writing', cmd: 'git clone https://github.com/Leey21/awesome-ai-research-writing.git' },
     { label: '启动 DeepSeek 栈', cmd: 'E:\\个人项目\\启动Codex-DeepSeek.bat' },
+    { label: '启动 Opus 4.7 栈', cmd: 'E:\\个人项目\\启动Codex-Opus.bat' },
   ],
   figGenPromptTemplate:
     'Use academic-figure-prompt skill. Paper: GeoFWI {{paper}}. Figure: {{figType}}. ' +
@@ -1468,9 +1604,9 @@ var EXPERIMENT_INTEGRITY = {
 /* ════ 三篇投稿战略 · JCR 目标与执行序（2026-06-17 升级） ════ */
 var SUBMISSION_STRATEGY = {
   updated: '2026-07-05',
-  record: '20260704 三篇实验写作全目录.md',
-  barAboveAverageRecord: '20260617 平均略高录用线与提升清单.md',
-  figureBankRecord: '20260705 候补图库备案.md',
+  record: '项目备案.md',
+  barAboveAverageRecord: '项目备案.md',
+  figureBankRecord: '项目备案.md',
   paceNote:
     'P1/P2/P3 主实验 + P3-EXT + 略高包（P1-E9 · P2 physics n5000）已闭环（2026-07-05）。当前阶段 = 写作壳/投稿准备 · 云 GPU 可关。候补图库 45 PDF 就绪。',
   sprintWeeksP1P2: 2,
@@ -1510,7 +1646,7 @@ var SUBMISSION_STRATEGY = {
     },
     p2: {
       id: 'P2',
-      title: 'Geological Fidelity Score (GFS) for structure-aware QC of velocity models',
+      title: 'Beyond Pixel Similarity: Revealing Structural Fidelity Loss in Seismic Velocity Model Evaluation',
       identity: '新评估指标 + 系统验证（velocity-proxy / denoising 域）',
       primary: {
         journal: 'Geophysics',
@@ -1594,7 +1730,7 @@ var SUBMISSION_STRATEGY = {
 /* ════ 平均略高录用线 · 定义与提升清单（2026-06-17 · 详录见同名 .md） ════ */
 var BAR_ABOVE_AVERAGE_GUIDE = {
   updated: '2026-06-17',
-  record: '20260617 平均略高录用线与提升清单.md',
+  record: '项目备案.md',
   paceNote: 'P1/P2 主体 ~2 周已完成；再 2 周冲刺 = 投稿版。P3 独立 GPU 块，不占用六周日历。',
   sprintWeeksP1P2: 2,
   definition: {
@@ -1680,7 +1816,7 @@ var BAR_ABOVE_AVERAGE_GUIDE = {
   ],
   p3AfterP1P2Submit:
     '7–12 GPU·day 真 B/C + E9 → ~1–2 周 main.tex + E8 图 → JGR 首投',
-  referenceBenchmarkAppendix: '20260617 平均略高录用线与提升清单.md · 附录 A',
+  referenceBenchmarkAppendix: '项目备案.md · §2026-06-17',
   w1Checklist: 'paper2/submission/W1_SPRINT_CHECKLIST.md',
   referenceBenchmark10: [
     { litId: 31, num: '31', title: 'OpenFWI', journal: 'NeurIPS 2022', lane: 'benchmark', mapsTo: 'P1', difficultyNote: 'C&G 主对标；不需 beat InversionNet' },
@@ -1713,7 +1849,7 @@ var PAPER_REVIEW_DASHBOARD = {
   publishabilityAssessment: {
     inputDate: '2026-06-17',
     strategyRecord: 'SUBMISSION_STRATEGY · BAR_ABOVE_AVERAGE_GUIDE · 20260629 发表难度与定位评估.md',
-    barAboveAverageRecord: '20260617 平均略高录用线与提升清单.md',
+    barAboveAverageRecord: '项目备案.md',
     record: '20260629 发表难度与定位评估.md',
     p1Record: 'paper1/experiments/P1_PUBLISHABILITY_ASSESSMENT.md',
     p2Record: 'paper2/experiments/P2_PUBLISHABILITY_ASSESSMENT.md',
@@ -1789,7 +1925,7 @@ var PAPER_REVIEW_DASHBOARD = {
       'paper1/experiments/P1_PUBLISHABILITY_ASSESSMENT.md',
       'paper2/experiments/P2_PUBLISHABILITY_ASSESSMENT.md',
       'paper3/experiments/P3_PUBLISHABILITY_ASSESSMENT.md',
-      '20260617 平均略高录用线与提升清单.md',
+      '项目备案.md',
       'paper1/experiments/P1_REFRAME_BENCH.md',
       'paper2/experiments/P2_SUBMIT_PREP.md',
       'paper1/experiments/P1_SUBMIT_PREP.md',
@@ -2587,7 +2723,7 @@ var PAPER3_WRITING_STATUS = {
     { id: 'P3-E10-K20', status: 'done', note: 'Tier-2 K=20 sensitivity · Appendix' },
     { id: 'P3-E8-fig', status: 'done', note: 'MMD 机制图 · 候补图库' },
     { id: 'main.tex', status: 'done', note: '13pp + Appendix Overthrust · PLS/Open Research' },
-    { id: 'figure-bank', status: 'done', note: '45 PDF · 20260705 候补图库备案.md' },
+    { id: 'figure-bank', status: 'done', note: '45 PDF · 项目备案.md' },
   ],
   pending: [
     { id: 'agujournal2025', note: 'AGU LaTeX 模板迁移' },
@@ -3141,30 +3277,56 @@ var GALLERY_TEMPLATES = [
 /* ════ OpenClaw 半私人版 — 远程 GPU 自主实验台 ════ */
 var OPENCLAW = {
   title: 'OpenClaw 自主实验工作台',
-  subtitle: 'ReAct 循环：本地助手思考 → AutoDL 远程执行 PyTorch/Devito 代码',
-  maxTurns: 6,
+  subtitle: 'ReAct 循环：本地助手思考 → 本机/WSL/AutoDL 执行 PyTorch 代码',
+  maxTurns: 8,
   confirmBeforeExecute: true,
   confirmBeforeExecuteHint: '默认开启：每轮 write_file/run_code 执行前弹窗确认。可在 OpenClaw 页取消勾选「自动执行」。',
-  defaultBackendUrl: '',
+  defaultBackendUrl: 'http://127.0.0.1:6006/execute',
+  localBat: '启动OpenClaw-WSL.bat',
+  localBatNote: 'WSL 沙盒指向 /root/projects/bp-diff-fwi-complex；本机联调可用 workspace/ + python agent_backend.py',
   systemInstruction:
-    '你是一个拥有地球物理学顶刊（Geophysics/GJI）水平的 PyTorch 算法专家智能体。\n' +
-    '你正在通过 JSON API 指挥一台带 GPU 的远程 Linux 服务器。\n' +
+    '你是一个拥有地球物理学顶刊（Geophysics/JGR:ML&C）水平的 PyTorch 算法专家智能体。\n' +
+    '你正在通过 JSON API 指挥一台 Linux 实验沙盒（本机 workspace 或 AutoDL）。\n' +
     '每次回复必须严格输出且仅输出以下 JSON（不要 Markdown 代码块）：\n' +
     '{\n "thought": "物理与数学分析，以及下一步计划",\n' +
     ' "action": "write_file" 或 "run_code" 或 "complete",\n' +
     ' "filename": "目标 Python 文件名",\n' +
     ' "content": "write_file 时的完整代码"\n}\n' +
-    '原则：高内聚物理算子、张量 shape 注释、根据 Traceback 闭环修正直到 complete。',
+    '原则：高内聚物理算子、张量 shape 注释、根据 Traceback 闭环修正直到 complete。\n' +
+    'Paper3 约束：GFS_λ 是诊断尺（instrument），不是本文贡献；主线是 generative prior 在有限 RTM 约束下的 failure mode；勿改锁定实验数字。',
   deploySteps: [
-    'AutoDL 上传 agent_backend.py，执行 pip install fastapi uvicorn pydantic',
-    'python agent_backend.py（默认 6006 端口）',
-    'AutoDL 控制台映射 6006 → 公网 https://xxxx.autodl.pro',
-    '本页或 API 设置中填写 .../execute 地址',
-    '用 启动GeoFWI.bat 启动本地服务器（CORS 代理）',
-    '输入物理实验指令，点击启动 ReAct 循环'
+    '本机：启动OpenClaw-WSL.bat 或 python agent_backend.py（6006）',
+    '本机：启动GeoFWI.bat → http://127.0.0.1:8080 （CORS 代理）',
+    'Execute URL 填 http://127.0.0.1:6006/execute 并测试连接',
+    '可选 AutoDL：映射 6006 → https://xxxx.autodl.pro/execute',
+    '用下方 P3 prompts 启动 ReAct 循环'
   ],
   examplePrompt:
-    '请基于 PyTorch 编写含 PML 吸收边界的 2D 声波 forward 算子，shape [Nx,Nz]，存为 fwi_pml.py 并测试运行。'
+    'Run paper3 RTM-quality ablation: degrade Scheme-B RTM (blur/downsample/noise), score GFS_λ with affine and optional U-Net baselines; write JSON under paper3/analysis/results/.',
+  p3Loop: {
+    title: 'Paper 3 · failure-mode completion loop',
+    thesis: 'Generative priors do not automatically recover missing geological information under RTM-only conditioning.',
+    gfsRole: 'instrument / diagnostic ruler (Paper 2 owns the metric)',
+    mustDo: [
+      'Narrative: Abstract/Intro/Conclusion = failure regimes, not “we propose GFS_λ”',
+      'RTM quality ablation (clean/blur/downsample/noise) → GFS_λ response',
+      'Deterministic U-Net/ResNet baseline beside affine RTM floor',
+      'Explain N=10→50 flat/negative as conditioning bottleneck',
+      'Overthrust = geological distribution shift, not “more data”'
+    ],
+    doNot: [
+      'Add more benchmarks',
+      'Claim GFS_λ as P3 contribution',
+      'Write “diffusion is useless”'
+    ]
+  },
+  openclawPrompts: [
+    'P3-1 叙事：把 Abstract/Intro 收束为 cautionary study on generative priors under limited RTM conditioning；GFS_λ=diagnostic ruler only。',
+    'P3-2 实验：写并运行 paper3/scripts/run_p3_rtm_quality_ablation.py（clean/blur/downsample/noise → GFS_λ）。',
+    'P3-3 基线：写并运行轻量 U-Net/ResNet RTM→Vp regression（N=50），与 affine 对照；证明 failure 非 diffusion 特有。',
+    'P3-4 解释：为 Table few-shot N=10 vs N=50 写 Discussion 段（conditioning bottleneck，非只报数）。',
+    'P3-5 收口：缩小 Appendix A GFS 篇幅语气；Overthrust 强调 distribution shift；编译 PDF + locked numbers 检查。'
+  ]
 };
 
 /* ════ 三篇论文 · 2 周最小实验矩阵（其余标 Deferred） ════ */
